@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>encontro · escolha o role</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <p class="eyebrow">convite</p>
+      <h1>vamos sair?</h1>
+      <p class="sub">escolhe o role </p>
+    </header>
+
+    <!-- 01 · role -->
+    <section class="step" id="step-role">
+      <p class="label">01 — escolha o role</p>
+      <div class="options">
+        <button class="opt" data-role="anexo" aria-pressed="false">
+          <span class="opt-title">anexo</span>
+          <span class="opt-desc">comer e beber trocando ideia</span>
+        </button>
+        <button class="opt" data-role="cinema" aria-pressed="false">
+          <span class="opt-title">cinema</span>
+          <span class="opt-desc">escolher o filme, lanche depois</span>
+        </button>
+        <button class="opt" data-role="os dois" aria-pressed="false">
+          <span class="opt-title">fazer os dois</span>
+          <span class="opt-desc">cinema + anexo, sem pressa</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 02 · filme (só texto) -->
+    <section class="step" id="step-filme" hidden>
+      <p class="label">02 — qual filme?</p>
+      <label class="field">
+        <span>filme que você quer ver</span>
+        <input id="filme-manual" type="text" placeholder="ex.: interestelar, duna 2, aquele que você falou…" />
+      </label>
+      <div class="row">
+        <button class="ghost" id="voltar-1" type="button">← voltar</button>
+        <button class="primary" id="manual-ok" type="button">continuar</button>
+      </div>
+      <p class="status" id="status-filme"></p>
+    </section>
+
+    <!-- 03 · confirma -->
+    <section class="step" id="step-confirma" hidden>
+      <p class="label">03 — fecha o combinado</p>
+      <p class="opt-title" style="margin: 0 0 20px;">Bea ❤</p>
+      <label class="field">
+        <span>observação (opcional)</span>
+        <textarea id="obs" rows="3" placeholder="dia, horário, algum lugar que você gosta…"></textarea>
+      </label>
+      <div class="row">
+        <button class="ghost" id="voltar-2" type="button">← voltar</button>
+        <button class="primary" id="enviar" type="button">confirmar</button>
+      </div>
+      <p class="status" id="status"></p>
+    </section>
+
+    <!-- 04 · pronto -->
+    <section class="step" id="step-pronto" hidden>
+      <p class="label">04 — combinado</p>
+      <h2 class="done-title">tá marcado.</h2>
+      <dl class="resumo" id="resumo"></dl>
+      <div class="row">
+        <button class="ghost" id="recomecar" type="button">escolher de novo</button>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <a href="/api/respostas.csv">baixar respostas (csv)</a>
+    </footer>
+  </main>
+
+  <script src="src/script.js"></script>
+</body>
+</html>
