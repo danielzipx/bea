@@ -1,82 +1,397 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>encontro · escolha o role</title>
-  <link rel="stylesheet" href="src/style.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>encontro · escolha o role</title>
+<style>
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+
+  :root {
+    --bg: #0c0c0d;
+    --panel: #131315;
+    --fg: #f3f0ea;
+    --muted: #8a867f;
+    --line: #26262a;
+    --accent: #e9c8a0;
+  }
+
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-image: radial-gradient(ellipse at 50% -20%, #1b1a1a 0%, transparent 60%);
+  }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px 96px; }
+
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 18px;
+  }
+
+  h1 {
+    font-family: "Iowan Old Style", Georgia, "Times New Roman", serif;
+    font-weight: 400; font-size: clamp(40px, 9vw, 72px);
+    line-height: .95; letter-spacing: -.02em; margin: 0 0 14px;
+  }
+
+  .sub { color: var(--muted); margin: 0 0 56px; font-size: 16px; }
+  .step + .step { margin-top: 56px; }
+
+  .label {
+    font-family: ui-monospace, monospace;
+    font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 20px;
+  }
+
+  .status { color: var(--muted); font-size: 14px; margin: 16px 0 0; }
+
+  .options { display: grid; gap: 12px; }
+
+  .opt {
+    display: flex; flex-direction: column; gap: 6px;
+    text-align: left; padding: 22px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 16px; color: inherit; font: inherit; cursor: pointer;
+    transition: border-color .18s, transform .18s, background .18s;
+  }
+  .opt:hover { border-color: #3a3a40; transform: translateY(-2px); }
+  .opt[aria-pressed="true"] { border-color: var(--accent); background: #17161a; }
+  .opt-title { font-size: 20px; }
+  .opt[aria-pressed="true"] .opt-title { color: var(--accent); }
+  .opt-desc { color: var(--muted); font-size: 14px; }
+
+  .field { display: block; margin-bottom: 16px; }
+  .field > span { display: block; margin-bottom: 8px; font-size: 13px; color: var(--muted); }
+  .field input,
+  .field textarea {
+    width: 100%; padding: 13px 14px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; color: var(--fg); font: inherit;
+    outline: none; resize: vertical;
+  }
+  .field input:focus,
+  .field textarea:focus { border-color: var(--accent); }
+
+  .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+
+  .primary, .ghost {
+    padding: 12px 22px; border-radius: 999px;
+    font: inherit; cursor: pointer; transition: .18s;
+  }
+  .primary {
+    background: var(--accent); color: #14100a;
+    border: 1px solid var(--accent); font-weight: 600;
+  }
+  .primary:hover { filter: brightness(1.06); }
+  .primary:disabled { opacity: .5; cursor: default; }
+  .ghost {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .ghost:hover { color: var(--fg); border-color: #3a3a40; }
+
+  .done-title {
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-weight: 400; font-size: clamp(30px, 6vw, 44px);
+    margin: 0 0 24px;
+  }
+
+  .resumo { display: grid; gap: 12px; margin: 0; }
+  .resumo > div { border-top: 1px solid var(--line); padding-top: 12px; }
+  .resumo dt {
+    font-family: ui-monospace, monospace; font-size: 11px;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+  }
+  .resumo dd { margin: 4px 0 0; font-size: 16px; }
+
+  .foot { margin-top: 72px; border-top: 1px solid var(--line); padding-top: 20px; }
+  .foot a { color: var(--muted); font-size: 13px; text-decoration: none; cursor: pointer; }
+  .foot a:hover { color: var(--fg); }
+
+  @media (max-width: 480px) {
+    .wrap { padding: 40px 18px 72px; }
+    .sub { margin-bottom: 40px; }
+    .step + .step { margin-top: 40px; }
+  }
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <header class="head">
-      <p class="eyebrow">convite</p>
-      <h1>vamos sair?</h1>
-      <p class="sub">escolhe o role </p>
-    </header>
+<main class="wrap">
+  <header class="head">
+    <p class="eyebrow">convite</p>
+    <h1>vamos sair?</h1>
+    <p class="sub">escolhe o role </p>
+  </header>
 
-    <!-- 01 · role -->
-    <section class="step" id="step-role">
-      <p class="label">01 — escolha o role</p>
-      <div class="options">
-        <button class="opt" data-role="anexo" aria-pressed="false">
-          <span class="opt-title">anexo</span>
-          <span class="opt-desc">comer e beber trocando ideia</span>
-        </button>
-        <button class="opt" data-role="cinema" aria-pressed="false">
-          <span class="opt-title">cinema</span>
-          <span class="opt-desc">escolher o filme, lanche depois</span>
-        </button>
-        <button class="opt" data-role="os dois" aria-pressed="false">
-          <span class="opt-title">fazer os dois</span>
-          <span class="opt-desc">cinema + anexo, sem pressa</span>
-        </button>
-      </div>
-    </section>
+  <!-- 01 · role -->
+  <section class="step" id="step-role">
+    <p class="label">01 — escolha o role</p>
+    <div class="options">
+      <button class="opt" data-role="anexo" aria-pressed="false">
+        <span class="opt-title">anexo</span>
+        <span class="opt-desc">comer e beber trocando ideia</span>
+      </button>
+      <button class="opt" data-role="cinema" aria-pressed="false">
+        <span class="opt-title">cinema</span>
+        <span class="opt-desc">escolher o filme, lanche depois</span>
+      </button>
+      <button class="opt" data-role="os dois" aria-pressed="false">
+        <span class="opt-title">fazer os dois</span>
+        <span class="opt-desc">cinema + anexo, sem pressa</span>
+      </button>
+    </div>
+  </section>
 
-    <!-- 02 · filme (só texto) -->
-    <section class="step" id="step-filme" hidden>
-      <p class="label">02 — qual filme?</p>
-      <label class="field">
-        <span>filme que você quer ver</span>
-        <input id="filme-manual" type="text" placeholder="ex.: interestelar, duna 2, aquele que você falou…" />
-      </label>
-      <div class="row">
-        <button class="ghost" id="voltar-1" type="button">← voltar</button>
-        <button class="primary" id="manual-ok" type="button">continuar</button>
-      </div>
-      <p class="status" id="status-filme"></p>
-    </section>
+  <!-- 02 · filme -->
+  <section class="step" id="step-filme" hidden>
+    <p class="label">02 — qual filme?</p>
+    <label class="field">
+      <span>filme que você quer ver</span>
+      <input id="filme-manual" type="text" placeholder="ex.: interestelar, duna 2, aquele que você falou…" />
+    </label>
+    <div class="row">
+      <button class="ghost" id="voltar-1" type="button">← voltar</button>
+      <button class="primary" id="manual-ok" type="button">continuar</button>
+    </div>
+    <p class="status" id="status-filme"></p>
+  </section>
 
-    <!-- 03 · confirma -->
-    <section class="step" id="step-confirma" hidden>
-      <p class="label">03 — fecha o combinado</p>
-      <p class="opt-title" style="margin: 0 0 20px;">Bea ❤</p>
-      <label class="field">
-        <span>observação (opcional)</span>
-        <textarea id="obs" rows="3" placeholder="dia, horário, algum lugar que você gosta…"></textarea>
-      </label>
-      <div class="row">
-        <button class="ghost" id="voltar-2" type="button">← voltar</button>
-        <button class="primary" id="enviar" type="button">confirmar</button>
-      </div>
-      <p class="status" id="status"></p>
-    </section>
+  <!-- 03 · confirma -->
+  <section class="step" id="step-confirma" hidden>
+    <p class="label">03 — fecha o combinado</p>
+    <p class="opt-title" style="margin: 0 0 20px;">Bea ❤</p>
+    <label class="field">
+      <span>observação (opcional)</span>
+      <textarea id="obs" rows="3" placeholder="dia, horário, algum lugar que você gosta…"></textarea>
+    </label>
+    <div class="row">
+      <button class="ghost" id="voltar-2" type="button">← voltar</button>
+      <button class="primary" id="enviar" type="button">confirmar</button>
+    </div>
+    <p class="status" id="status"></p>
+  </section>
 
-    <!-- 04 · pronto -->
-    <section class="step" id="step-pronto" hidden>
-      <p class="label">04 — combinado</p>
-      <h2 class="done-title">tá marcado.</h2>
-      <dl class="resumo" id="resumo"></dl>
-      <div class="row">
-        <button class="ghost" id="recomecar" type="button">escolher de novo</button>
-      </div>
-    </section>
+  <!-- 04 · pronto -->
+  <section class="step" id="step-pronto" hidden>
+    <p class="label">04 — combinado</p>
+    <h2 class="done-title">tá marcado.</h2>
+    <dl class="resumo" id="resumo"></dl>
+    <div class="row">
+      <button class="ghost" id="recomecar" type="button">escolher de novo</button>
+    </div>
+  </section>
 
-    <footer class="foot">
-      <a href="/api/respostas.csv">baixar respostas (csv)</a>
-    </footer>
-  </main>
+  <footer class="foot">
+    <a id="baixar-csv">baixar respostas (csv)</a>
+  </footer>
+</main>
 
-  <script src="src/script.js"></script>
+<script>
+'use strict';
+
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+}[c]));
+
+const STORAGE_KEY = 'encontro_respostas_v1';
+
+const state = { role: null, filme: '' };
+
+const el = {
+  filme:      $('#step-filme'),
+  confirma:   $('#step-confirma'),
+  pronto:     $('#step-pronto'),
+  filmeInput: $('#filme-manual'),
+  manualOk:   $('#manual-ok'),
+  statusFilme:$('#status-filme'),
+  obs:        $('#obs'),
+  status:     $('#status'),
+  resumo:     $('#resumo'),
+  enviar:     $('#enviar')
+};
+
+/* ---------- storage local ---------- */
+function lerRespostas() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function salvarResposta(obj) {
+  const lista = lerRespostas();
+  lista.push(obj);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+}
+
+/* ---------- 01 · role ---------- */
+$$('.opt').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    $$('.opt').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    btn.setAttribute('aria-pressed', 'true');
+
+    state.role = btn.dataset.role;
+    state.filme = '';
+    el.filmeInput.value = '';
+    el.statusFilme.textContent = '';
+    el.status.textContent = '';
+    el.confirma.hidden = true;
+    el.pronto.hidden = true;
+
+    if (state.role === 'anexo') {
+      el.filme.hidden = true;
+      abrirConfirma();
+    } else {
+      el.filme.hidden = false;
+      el.filme.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+/* ---------- 02 · filme ---------- */
+el.manualOk.addEventListener('click', () => {
+  const v = el.filmeInput.value.trim();
+  if (!v) {
+    el.statusFilme.textContent = 'escreve o filme primeiro.';
+    el.filmeInput.focus();
+    return;
+  }
+  state.filme = v;
+  el.statusFilme.textContent = '';
+  abrirConfirma();
+});
+
+el.filmeInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') el.manualOk.click();
+});
+
+/* ---------- navegação ---------- */
+function abrirConfirma() {
+  el.confirma.hidden = false;
+  el.pronto.hidden = true;
+  el.confirma.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+$('#voltar-1').addEventListener('click', () => {
+  el.filme.hidden = true;
+  el.confirma.hidden = true;
+});
+
+$('#voltar-2').addEventListener('click', () => {
+  el.confirma.hidden = true;
+});
+
+/* ---------- 03 · envio ---------- */
+el.enviar.addEventListener('click', () => {
+  if (!state.role) return;
+
+  if (state.role !== 'anexo' && !state.filme) {
+    el.status.textContent = 'escolhe um filme primeiro.';
+    return;
+  }
+
+  el.enviar.disabled = true;
+  el.status.textContent = 'salvando…';
+
+  try {
+    salvarResposta({
+      data_hora: new Date().toLocaleString('pt-BR'),
+      role:  state.role,
+      filme: state.filme,
+      obs:   el.obs.value.trim()
+    });
+    mostrarPronto();
+  } catch (e) {
+    el.status.textContent = 'não deu pra salvar: ' + e.message;
+  } finally {
+    el.enviar.disabled = false;
+  }
+});
+
+/* ---------- 04 · resumo ---------- */
+function labelRole(r) {
+  if (r === 'anexo')   return 'anexo — comer e beber trocando ideia';
+  if (r === 'cinema')  return 'cinema — filme + lanche depois';
+  if (r === 'os dois') return 'fazer os dois — cinema + anexo';
+  return '—';
+}
+
+function mostrarPronto() {
+  el.confirma.hidden = true;
+  el.filme.hidden = true;
+  el.pronto.hidden = false;
+
+  const linhas = [
+    ['role',  labelRole(state.role)],
+    ['filme', state.filme || '—'],
+    ['obs',   el.obs.value.trim() || '—']
+  ];
+
+  el.resumo.innerHTML = linhas
+    .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`)
+    .join('');
+
+  el.status.textContent = '';
+  el.pronto.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ---------- recomeçar ---------- */
+$('#recomecar').addEventListener('click', () => {
+  state.role = null;
+  state.filme = '';
+  el.filmeInput.value = '';
+  el.obs.value = '';
+  el.statusFilme.textContent = '';
+  el.status.textContent = '';
+
+  $$('.opt').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+
+  el.filme.hidden = true;
+  el.confirma.hidden = true;
+  el.pronto.hidden = true;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ---------- baixar CSV (gerado no browser) ---------- */
+$('#baixar-csv').addEventListener('click', (e) => {
+  e.preventDefault();
+  const lista = lerRespostas();
+
+  if (!lista.length) {
+    alert('nenhuma resposta salva ainda.');
+    return;
+  }
+
+  const escCsv = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const header = 'data_hora,role,filme,observacao';
+  const linhas = lista.map((r) =>
+    [escCsv(r.data_hora), escCsv(r.role), escCsv(r.filme), escCsv(r.obs)].join(',')
+  );
+
+  const csv = '\uFEFF' + header + '\n' + linhas.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'respostas.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+</script>
 </body>
 </html>
